@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="styleSheet" href="styleSheet.css">
+</head>
+<body>
+    <div class="contenedor">
+        <h1>To-Do List</h1>
+
+        <div class="input-area">
+            <input type="text" id="taskContainer" placeholder="Título de la tarea..." />
+            <input type="text" id="descContainer" placeholder="Descripción (opcional)..." />
+            <button id="btnAgregar">Agregar</button>
+        </div>
+
+        <ul id="display"></ul>
+    </div>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+          <h3>Editar tarea</h3>
+            <input type="text" id="editTitulo" placeholder="Título" />
+                <textarea id="editDescripcion" placeholder="Descripción"></textarea>
+          <div class="modal-botones">
+            <button id="btnCancelar">Cancelar</button>
+            <button id="btnGuardar">Guardar</button>
+          </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

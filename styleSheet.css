@@ -1,0 +1,264 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: #121212;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+  margin: 0;
+}
+
+.contenedor {
+  background: #1e1e1e;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid #2a2a2a;
+}
+
+h1 {
+  text-align: center;
+  color: #a78bfa;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.input-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#taskContainer,
+#descContainer {
+  padding: 12px 14px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  background: #2a2a2a;
+  color: #f1f1f1;
+  transition: border-color 0.2s ease;
+  flex: 1;
+}
+
+#taskContainer::placeholder,
+#descContainer::placeholder {
+  color: #777;
+}
+
+#taskContainer:focus,
+#descContainer:focus {
+  border-color: #a78bfa;
+}
+
+.input-area button {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  flex-shrink: 0;
+}
+
+.input-area button:hover {
+  background: #6d28d9;
+}
+
+.input-area button:active {
+  transform: scale(0.97);
+}
+
+#display {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tarea {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #262626;
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid #333;
+  transition: background 0.2s ease, transform 0.15s ease;
+  animation: aparecer 0.25s ease;
+}
+
+.tarea:hover {
+  background: #2e2e2e;
+  transform: translateX(2px);
+}
+
+.tarea button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.tarea button:active {
+  transform: scale(0.95);
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Contenido de cada tarea (título + descripción) */
+
+.contenido-tarea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.titulo {
+  font-size: 1rem;
+  color: #e5e5e5;
+}
+
+.descripcion {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.completada .titulo {
+  text-decoration: line-through;
+  color: #666;
+}
+
+/* Botones por clase */
+
+.btn-completar {
+  background: #16a34a;
+}
+.btn-completar:hover {
+  background: #15803d;
+}
+
+.btn-eliminar {
+  background: #dc2626;
+}
+.btn-eliminar:hover {
+  background: #b91c1c;
+}
+
+.btn-editar {
+  background: #d97706;
+}
+.btn-editar:hover {
+  background: #b45309;
+}
+
+/* Modal de edición */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-overlay.activo {
+  display: flex;
+}
+
+.modal-box {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-box h3 {
+  color: #a78bfa;
+  margin: 0 0 8px 0;
+}
+
+.modal-box input,
+.modal-box textarea {
+  padding: 10px 12px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #f1f1f1;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  resize: none;
+}
+
+.modal-box input:focus,
+.modal-box textarea:focus {
+  border-color: #a78bfa;
+}
+
+.modal-box textarea {
+  min-height: 80px;
+}
+
+.modal-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-botones button {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  color: white;
+}
+
+#btnCancelar {
+  background: #444;
+}
+#btnCancelar:hover {
+  background: #555;
+}
+
+#btnGuardar {
+  background: #7c3aed;
+}
+#btnGuardar:hover {
+  background: #6d28d9;
+}
