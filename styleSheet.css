@@ -262,3 +262,48 @@ h1 {
 #btnGuardar:hover {
   background: #6d28d9;
 }
+
+/* ---------- Responsive: solo celular (max 480px) ---------- */
+
+@media (max-width: 480px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  .contenedor {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .input-area {
+    flex-direction: column;
+  }
+
+  .input-area button {
+    width: 100%;
+  }
+
+  .tarea {
+    flex-wrap: wrap;
+  }
+
+  .contenido-tarea {
+    flex-basis: 100%;
+  }
+
+  .tarea button {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8rem;
+    padding: 8px 6px;
+  }
+
+  .modal-box {
+    width: 92%;
+    padding: 20px;
+  }
+}
