@@ -1,4 +1,3 @@
-// ---------- Configuración de Firebase ----------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import {
   getFirestore,
@@ -40,7 +39,7 @@ enableIndexedDbPersistence(db).catch((err) => {
 const tareasRef = collection(db, "tareas");
 
 let liEditando = null;
-let unsubscribeTareas = null; // para dejar de escuchar cuando cambia de usuario
+let unsubscribeTareas = null; 
 
 // ---------- Autenticación ----------
 
@@ -91,7 +90,6 @@ onAuthStateChanged(auth, (usuario) => {
   const overlay = document.getElementById('authOverlay');
 
   if (usuario) {
-    // Hay sesión iniciada
     overlay.style.display = 'none';
     document.getElementById('authEmail').value = '';
     document.getElementById('authPassword').value = '';
@@ -99,18 +97,16 @@ onAuthStateChanged(auth, (usuario) => {
 
     escucharTareas(usuario.uid);
   } else {
-    // No hay sesión
     overlay.style.display = 'flex';
     document.querySelector('#display').innerHTML = '';
 
     if (unsubscribeTareas) {
-      unsubscribeTareas(); // deja de escuchar las tareas del usuario anterior
+      unsubscribeTareas(); 
       unsubscribeTareas = null;
     }
   }
 });
 
-// ---------- Crear elemento ----------
 
 function crearElementoTarea(texto, descripcion, id, completada = false) {
   let li = document.createElement('li');
@@ -174,11 +170,10 @@ function escucharTareas(uid) {
   });
 }
 
-// ---------- Agregar tarea ----------
 
 function agregarTarea() {
   const usuario = auth.currentUser;
-  if (!usuario) return; // seguridad extra, no debería pasar
+  if (!usuario) return; 
 
   let input = document.getElementById('taskContainer');
   let inputDesc = document.getElementById('descContainer');
@@ -198,14 +193,12 @@ function agregarTarea() {
   inputDesc.value = '';
 }
 
-// ---------- Eliminar tarea ----------
 
 async function eliminarTarea(elementoLi) {
   const id = elementoLi.getAttribute('data-id');
   await deleteDoc(doc(db, "tareas", id));
 }
 
-// ---------- Completar tarea ----------
 
 async function completarTarea(li, boton) {
   const id = li.getAttribute('data-id');
@@ -216,7 +209,6 @@ async function completarTarea(li, boton) {
   });
 }
 
-// ---------- Modal de edición ----------
 
 function abrirModalEditar(li) {
   liEditando = li;
@@ -249,13 +241,11 @@ async function guardarEdicion() {
   cerrarModal();
 }
 
-// ---------- Eventos ----------
 
 document.getElementById('btnAgregar').addEventListener('click', agregarTarea);
 document.getElementById('btnGuardar').addEventListener('click', guardarEdicion);
 document.getElementById('btnCancelar').addEventListener('click', cerrarModal);
 
-// ---------- Service Worker (offline) ----------
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
     .then(() => console.log('Service Worker registrado'))
