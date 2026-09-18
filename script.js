@@ -8,8 +8,17 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  query,
+  where,
   enableIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDHl7NavFblYUqlgavovW9xQXZpt9YjeRw",
@@ -22,6 +31,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 enableIndexedDbPersistence(db).catch((err) => {
   console.warn("Persistencia offline no disponible:", err.code);
@@ -30,6 +40,75 @@ enableIndexedDbPersistence(db).catch((err) => {
 const tareasRef = collection(db, "tareas");
 
 let liEditando = null;
+let unsubscribeTareas = null; // para dejar de escuchar cuando cambia de usuario
+
+// ---------- Autenticación ----------
+
+document.getElementById('btnLogin').addEventListener('click', () => {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errorBox = document.getElementById('authError');
+  errorBox.textContent = '';
+
+  signInWithEmailAndPassword(auth, email, password)
+    .catch((error) => {
+      errorBox.textContent = traducirErrorAuth(error.code);
+    });
+});
+
+document.getElementById('btnRegistro').addEventListener('click', () => {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errorBox = document.getElementById('authError');
+  errorBox.textContent = '';
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .catch((error) => {
+      errorBox.textContent = traducirErrorAuth(error.code);
+    });
+});
+
+document.getElementById('btnLogout').addEventListener('click', () => {
+  signOut(auth);
+});
+
+function traducirErrorAuth(codigo) {
+  const mensajes = {
+    'auth/invalid-email': 'Correo inválido.',
+    'auth/missing-password': 'Ingresa una contraseña.',
+    'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.',
+    'auth/email-already-in-use': 'Ese correo ya tiene una cuenta.',
+    'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+    'auth/user-not-found': 'No existe una cuenta con ese correo.',
+    'auth/wrong-password': 'Contraseña incorrecta.'
+  };
+  return mensajes[codigo] || 'Ocurrió un error, intenta de nuevo.';
+}
+
+// ---------- Reacciona a login / logout ----------
+
+onAuthStateChanged(auth, (usuario) => {
+  const overlay = document.getElementById('authOverlay');
+
+  if (usuario) {
+    // Hay sesión iniciada
+    overlay.style.display = 'none';
+    document.getElementById('authEmail').value = '';
+    document.getElementById('authPassword').value = '';
+    document.getElementById('authError').textContent = '';
+
+    escucharTareas(usuario.uid);
+  } else {
+    // No hay sesión
+    overlay.style.display = 'flex';
+    document.querySelector('#display').innerHTML = '';
+
+    if (unsubscribeTareas) {
+      unsubscribeTareas(); // deja de escuchar las tareas del usuario anterior
+      unsubscribeTareas = null;
+    }
+  }
+});
 
 // ---------- Crear elemento ----------
 
@@ -76,10 +155,12 @@ function crearElementoTarea(texto, descripcion, id, completada = false) {
   return li;
 }
 
-// ---------- Cargar tareas desde Firestore ----------
+// ---------- Escuchar tareas SOLO del usuario actual ----------
 
-function escucharTareas() {
-  onSnapshot(tareasRef, (snapshot) => {
+function escucharTareas(uid) {
+  const q = query(tareasRef, where("uid", "==", uid));
+
+  unsubscribeTareas = onSnapshot(q, (snapshot) => {
     const display = document.querySelector('#display');
     display.innerHTML = '';
 
@@ -96,6 +177,9 @@ function escucharTareas() {
 // ---------- Agregar tarea ----------
 
 function agregarTarea() {
+  const usuario = auth.currentUser;
+  if (!usuario) return; // seguridad extra, no debería pasar
+
   let input = document.getElementById('taskContainer');
   let inputDesc = document.getElementById('descContainer');
   let tarea = input.value.trim();
@@ -106,7 +190,8 @@ function agregarTarea() {
   addDoc(tareasRef, {
     texto: tarea,
     descripcion: descripcion,
-    completada: false
+    completada: false,
+    uid: usuario.uid
   });
 
   input.value = '';
@@ -118,7 +203,6 @@ function agregarTarea() {
 async function eliminarTarea(elementoLi) {
   const id = elementoLi.getAttribute('data-id');
   await deleteDoc(doc(db, "tareas", id));
-  elementoLi.remove();
 }
 
 // ---------- Completar tarea ----------
@@ -130,11 +214,9 @@ async function completarTarea(li, boton) {
   await updateDoc(doc(db, "tareas", id), {
     completada: nuevoEstado
   });
-
-  li.classList.toggle('completada');
-  boton.textContent = nuevoEstado ? 'Deshacer' : 'Completar';
 }
 
+// ---------- Modal de edición ----------
 
 function abrirModalEditar(li) {
   liEditando = li;
@@ -164,21 +246,18 @@ async function guardarEdicion() {
     descripcion: nuevaDescripcion
   });
 
-  liEditando.querySelector('.titulo').textContent = nuevoTitulo;
-  liEditando.querySelector('.descripcion').textContent = nuevaDescripcion;
-
   cerrarModal();
 }
 
+// ---------- Eventos ----------
 
 document.getElementById('btnAgregar').addEventListener('click', agregarTarea);
 document.getElementById('btnGuardar').addEventListener('click', guardarEdicion);
 document.getElementById('btnCancelar').addEventListener('click', cerrarModal);
 
+// ---------- Service Worker (offline) ----------
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
     .then(() => console.log('Service Worker registrado'))
     .catch(err => console.error('Error registrando SW:', err));
 }
-
-escucharTareas();

@@ -10,8 +10,23 @@
     <link rel="styleSheet" href="styleSheet.css">
 </head>
 <body>
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-box">
+            <h2 id="authTitulo">Iniciar sesión</h2>
+
+            <input type="email" id="authEmail" placeholder="Correo electrónico" />
+            <input type="password" id="authPassword" placeholder="Contraseña" />
+
+            <p id="authError" class="auth-error"></p>
+
+            <button id="btnLogin">Iniciar sesión</button>
+            <button id="btnRegistro">Crear cuenta</button>
+        </div>
+    </div>
+
     <div class="contenedor">
         <h1>To-Do List</h1>
+        <button id="btnLogout" class="btn-logout">Cerrar sesión</button>
 
         <div class="input-area">
             <input type="text" id="taskContainer" placeholder="Título de la tarea..." />

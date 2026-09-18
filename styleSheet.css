@@ -307,3 +307,91 @@ h1 {
     padding: 20px;
   }
 }
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.auth-box {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-box h2 {
+  color: #a78bfa;
+  text-align: center;
+  margin: 0 0 8px 0;
+}
+
+.auth-box input {
+  padding: 12px 14px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #f1f1f1;
+  font-size: 1rem;
+  outline: none;
+}
+
+.auth-box input:focus {
+  border-color: #a78bfa;
+}
+
+.auth-box button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#btnLogin {
+  background: #7c3aed;
+}
+#btnLogin:hover {
+  background: #6d28d9;
+}
+
+#btnRegistro {
+  background: #333;
+}
+#btnRegistro:hover {
+  background: #444;
+}
+
+.auth-error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  text-align: center;
+  min-height: 18px;
+  margin: 0;
+}
+
+.btn-logout {
+  display: block;
+  margin: 0 auto 20px auto;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.btn-logout:hover {
+  background: #444;
+}

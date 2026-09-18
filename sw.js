@@ -1,4 +1,4 @@
-const CACHE_NAME = 'todo-app-v3'; // <- número subido
+const CACHE_NAME = 'todo-app-v4';
 const ARCHIVOS = [
   './',
   './index.html',
@@ -10,7 +10,7 @@ const ARCHIVOS = [
 ];
 
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // activa el nuevo SW de inmediato, sin esperar
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ARCHIVOS))
   );
@@ -21,7 +21,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then(nombres =>
       Promise.all(
         nombres
-          .filter(nombre => nombre !== CACHE_NAME) // borra cachés viejos
+          .filter(nombre => nombre !== CACHE_NAME)
           .map(nombre => caches.delete(nombre))
       )
     )
@@ -36,3 +36,5 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+
